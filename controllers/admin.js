@@ -21,7 +21,7 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     description: description,
     imageUrl: imageUrl,
-    userId: req.session.user,
+    userId: req.user,
   });
   product
     .save()
@@ -64,7 +64,7 @@ exports.postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
-  const userId = req.session.user;
+  const userId = req.user;
   Product.findOneAndUpdate({ _id: prodId }, { $set: req.body }, { new: true })
     .then((productData) => {
       // const product = new Product({
