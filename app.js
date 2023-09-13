@@ -9,6 +9,7 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 const errorController = require("./controllers/error");
 const mongoConnect = require("./util/database").mongoConnect;
 const User = require("./models/user");
+const flash = require("connect-flash");
 
 const MONGODB_URI = "mongodb://localhost:27017/localHost";
 const app = express();
@@ -17,6 +18,10 @@ const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
+
+// const csrf = require("csurf");
+// const csrfProtection = csrf();
+app.use(flash());
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -36,6 +41,8 @@ app.use(
   })
 );
 
+// app.use(csrfProtection);
+
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
@@ -49,6 +56,12 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  // res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
@@ -56,5 +69,5 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoConnect(() => {
-  app.listen(3000);
+  app.listen(3001);
 });

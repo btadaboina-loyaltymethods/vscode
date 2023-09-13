@@ -13,20 +13,6 @@ const mongoConnect = (callback) => {
       _db = client.connection.db;
       callback();
     })
-    .then((result) => {
-      User.findOne().then((user) => {
-        if (!user) {
-          const user = new User({
-            name: "Kumar",
-            email: "k@bharat.com",
-            cart: {
-              items: [],
-            },
-          });
-          user.save();
-        }
-      });
-    })
     .catch((err) => {
       console.error("Connection error", err);
     });
