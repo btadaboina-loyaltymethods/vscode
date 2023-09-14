@@ -65,15 +65,6 @@ exports.postEditProduct = (req, res, next) => {
   const userId = req.user;
   Product.findOneAndUpdate({ _id: prodId }, { $set: req.body }, { new: true })
     .then((productData) => {
-      // const product = new Product({
-      //   title: updatedTitle,
-      //   price: updatedPrice,
-      //   description: updatedDesc,
-      //   imageUrl: updatedImageUrl,
-      //   userId: userId,
-      //   prodId: prodId,
-      // });
-      // return product.save();
       console.log(productData, "line 79");
     })
     .then((result) => {
@@ -84,7 +75,7 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 module.exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find({ userId: req.session.user._id })
     .then((products) => {
       res.render("admin/products", {
         prods: products,
@@ -97,7 +88,7 @@ module.exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId)
+  Product.deleteOne({ _id: prodId })
     .then(() => {
       console.log("DESTROYED PRODUCT");
       res.redirect("/admin/products");
