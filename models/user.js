@@ -51,13 +51,14 @@ userSchema.methods.addToCart = function (product) {
 };
 
 userSchema.methods.removeFromCart = function (productId) {
+  console.log(productId, "line 52");
   const updatedCartItems = this.cart.items.filter((item) => {
     return item.productId.toString() !== productId.toString();
   });
   this.cart.items = updatedCartItems;
+  console.log(updatedCartItems, "line 59");
   return this.save();
 };
-
 userSchema.methods.clearCart = function () {
   this.cart = { items: [] };
   return this.save();
